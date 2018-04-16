@@ -99,3 +99,8 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+
+# SAFE APIKEY FROM MISTAKES
+.ipynb
+.csv
