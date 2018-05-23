@@ -3,7 +3,7 @@ import pandas as pd
 from tqdm import tqdm
 from io import StringIO
 import requests
-
+import warnings
 
 class Tycho():
 
@@ -108,22 +108,21 @@ class Tycho():
                     axis=1, how='all').columns[0]
 
         except IndexError:
-            print('Region not found!')
+            warnings.warn("Region not found", DeprecationWarning)
             region_cat = None
-        
+
         finally:
             return region_cat
-    
-    def query(self, region, condition, infer=False, region_cat='CountryName'):
 
+    def query(self, region, condition, infer=False, region_cat='CountryName'):
         '''
         Builds Query with params
         '''
         url = self.base_url + 'query'
-        
+
         if infer:
             region_infered = self._get_region_level(region)
-            region_cat=region_infered
+            region_cat = region_infered
 
         params = {'apikey': self.apikey,
                   'ConditionName': condition,
@@ -133,16 +132,14 @@ class Tycho():
         response = req_raw.content.decode('utf8')
         return pd.read_csv(StringIO(response))
 
-
     def query_allcountries(self, condition):
         '''
         Returns condition present in all countries
         '''
 
-        countries_unique = self.countries.iloc[:,1].unique()
+        countries_unique = self.countries.iloc[:, 1].unique()
         df = pd.DataFrame()
         for country in countries_unique:
             df = df.append(self.query(country, condition))
-        
-        return df
 
+        return df
